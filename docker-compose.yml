@@ -1,0 +1,19 @@
+services:
+  vep:
+    image: ensemblorg/ensembl-vep
+    volumes:
+      - ./cache:/opt/vep/.vep
+      - ./data:/scratch
+      - ./output:/output
+    command: >
+      bash -c "
+      if [ '$${VEP_MODE}' = 'offline' ]; then
+        ls -alh /scratch;
+        vep --everything --mane --verbose --cache --offline --assembly GRCh38 --format id --input_file /scratch/rsidsmin.txt --output_file /output/vep_output.txt --force-overwrite;
+        ls -alh /scratch;
+      else
+        ls -alh /scratch;
+        vep --everything --mane --verbose --assembly GRCh38 --database --format id --input_file /scratch/rsidsmin.txt --output_file /output/vep_output.txt --force_overwrite;
+        ls -alh /scratch;
+      fi
+      "
